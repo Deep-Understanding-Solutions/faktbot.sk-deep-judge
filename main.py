@@ -3,21 +3,40 @@ from torch import nn
 from torch import tensor
 from torch.optim import Adam
 import pandas as pd
+import numpy as np
 
 # System constants.
+batch_size = 2
+num_batches = 2
 article_csv_selector = "text"
+label_csv_selector = "label"
 title_csv_selector = "title"
 bert_output_dim = 768
+csv_rows_limit = batch_size * num_batches
 
 # Parse csv data.
 csv_data = pd.read_csv("train.csv")
+csv_data = csv_data.dropna().head(csv_rows_limit)
+
 articles = csv_data[article_csv_selector].values.tolist()
+articles = np.reshape(articles, (-1, batch_size)).tolist()
+tokenized_articles = np.empty((np.shape(articles)[0]), dtype=object)
+
+labels = csv_data[label_csv_selector].values.tolist()
+labels = list(map(lambda value: [0., 1.] if str(1) else [1., 0.], labels))
+labels = np.reshape(labels, (-1, batch_size, 2))
 
 # Get ready BERT and encode input data.
 tokenizer = RobertaTokenizer.from_pretrained("gerulata/slovakbert")
 roberta_model = RobertaModel.from_pretrained("gerulata/slovakbert")
-encoded_articles = tokenizer(articles, return_tensors="pt", padding=True, truncation=True)
 
+# Tokenize article batches by iterating over them.
+for batch_idx, articles_batch in enumerate(articles):
+    tokenized_articles_batch = tokenizer(articles[batch_idx], return_tensors="pt", padding=True, truncation=True)
+    tokenized_articles[batch_idx] = tokenized_articles_batch
+
+tokenized_articles = tokenized_articles.tolist()
+labels = labels.tolist()
 
 class DeepJudge(nn.Module):
     """This model uses pooled output of BERT and then runs it through
@@ -66,8 +85,11 @@ def train(model, train_data, val_data, learning_rate, epochs):
     # This is for demonstrational purposes, it needs to be integrated to DataLoader and stuff.
     # But it works.
     # @TODO
-    output = model(encoded_articles)
-    loss = criterion(output, tensor([[0., 1.], [0., 1.]]))
+    articles_batch = tokenized_articles[0]
+    labels_batch = labels[0]
+    output = model(articles_batch)
+
+    loss = criterion(output, tensor(labels_batch))
     model.zero_grad()
     loss.backward()
     optimizer.step()
