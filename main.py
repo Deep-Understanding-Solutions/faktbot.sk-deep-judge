@@ -23,7 +23,6 @@ articles = np.reshape(articles, (-1, batch_size)).tolist()
 tokenized_articles = np.empty((np.shape(articles)[0]), dtype=object)
 
 labels = csv_data[label_csv_selector].values.tolist()
-labels = list(map(lambda value: [0., 1.] if str(1) else [1., 0.], labels))
 labels = np.reshape(labels, (-1, batch_size, 2))
 
 # Get ready BERT and encode input data.
@@ -37,6 +36,7 @@ for batch_idx, articles_batch in enumerate(articles):
 
 tokenized_articles = tokenized_articles.tolist()
 labels = labels.tolist()
+
 
 class DeepJudge(nn.Module):
     """This model uses pooled output of BERT and then runs it through
