@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 
 # System constants.
+epochs = 2
 batch_size = 2
 num_batches = 2
 article_csv_selector = "text"
@@ -23,7 +24,7 @@ articles = np.reshape(articles, (-1, batch_size)).tolist()
 tokenized_articles = np.empty((np.shape(articles)[0]), dtype=object)
 
 labels = csv_data[label_csv_selector].values.tolist()
-labels = np.reshape(labels, (-1, batch_size, 2))
+labels = np.reshape(labels, (-1, batch_size))
 
 # Get ready BERT and encode input data.
 tokenizer = RobertaTokenizer.from_pretrained("gerulata/slovakbert")
@@ -85,15 +86,18 @@ def train(model, train_data, val_data, learning_rate, epochs):
     # This is for demonstrational purposes, it needs to be integrated to DataLoader and stuff.
     # But it works.
     # @TODO
-    articles_batch = tokenized_articles[0]
-    labels_batch = labels[0]
-    output = model(articles_batch)
+    for epoch in range(epochs):
+        for batch_index in range(len(tokenized_articles)):
+            articles_batch = tokenized_articles[batch_index]
+            labels_batch = labels[batch_index]
 
-    loss = criterion(output, tensor(labels_batch))
-    model.zero_grad()
-    loss.backward()
-    optimizer.step()
+            output = model(articles_batch)
+
+            loss = criterion(output, tensor(labels_batch))
+            model.zero_grad()
+            loss.backward()
+            optimizer.step()
 
 
 deepJudgeModel = DeepJudge()
-train(deepJudgeModel, None, None, .1, None)
+train(deepJudgeModel, None, None, .1, epochs)
