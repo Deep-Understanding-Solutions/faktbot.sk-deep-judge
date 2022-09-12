@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.postimg.cc/d06RCLJW/deep-judge-modified.png" align="center" width="200" style="border-radius: 20px;"/>
+  <img src="https://pasteboard.co/qNFNHZoDKsDu.png" align="center" width="200" style="border-radius: 20px;"/>
 </p>
 
 # faktbot.sk-deep-judge
