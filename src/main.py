@@ -1,59 +1,64 @@
 from transformers import RobertaTokenizer, RobertaModel
 from torch import nn
-from torch import tensor
 from torch.optim import Adam
+from tqdm import tqdm
 import torch
 import pandas as pd
-import numpy as np
 import config as cfg
 from model.DeepJudge import DeepJudge
-import random
+from data.Dataset import Dataset
 
 # Parse csv data.
 csv_data = pd.read_csv("data/train.csv")
 csv_data = csv_data.dropna().head(cfg.csv_rows_limit)
 
+# Convert x and ys to list.
 articles = csv_data[cfg.article_csv_selector].values
-articles = np.reshape(articles, (-1, cfg.batch_size)).tolist()
-tokenized_articles = np.empty((np.shape(articles)[0]), dtype=object)
-
 labels = csv_data[cfg.label_csv_selector].values
-labels = np.reshape(labels, (-1, cfg.batch_size))
 
 # Get ready BERT and encode input data.
 tokenizer = RobertaTokenizer.from_pretrained("gerulata/slovakbert")
 roberta_model = RobertaModel.from_pretrained("gerulata/slovakbert")
 
-# Tokenize article batches by iterating over them.
-for batch_idx, articles_batch in enumerate(articles):
-    tokenized_articles_batch = tokenizer(articles[batch_idx], return_tensors="pt", padding=True, truncation=True)
-    tokenized_articles[batch_idx] = tokenized_articles_batch
-
-tokenized_articles = tokenized_articles.tolist()
-labels = labels.tolist()
+# Create the dataset and the data loader.
+train = Dataset(articles, labels, tokenizer)
+train_data_loader = torch.utils.data.DataLoader(train, batch_size=cfg.batch_size, shuffle=True)
 
 
-def train(model, xs, ys, learning_rate, epochs):
-    """Method invoking main training cycle."""
+def train(model, learning_rate, epochs):
+    """
+    Method invoking main training cycle.
+    """
     # We will use categorical cross-entropy with Adam activation.
     criterion = nn.CrossEntropyLoss()
     optimizer = Adam(model.parameters(), lr=learning_rate)
 
     # This is for demonstrational purposes, it needs to be integrated to DataLoader and stuff.
     for epoch in range(epochs):
-        for batch_index in range(len(tokenized_articles)):
-            x = xs[batch_index]
-            y = ys[batch_index]
 
-            output = model(x)
+        total_acc_train = 0
+        total_loss_train = 0
 
-            loss = criterion(output, tensor(y))
-            print(f"Epoch: {epoch + 1}/{epochs}, batch: {batch_index + 1}/{len(tokenized_articles)}, loss: {loss}")
+        for train_input, train_label in tqdm(train_data_loader):
+            # [batch_size, 1, seq_length] - remove the 1.
+            input_ids = train_input.input_ids.squeeze(1)
+            input_masks = train_input.attention_mask
+
+            output = model(input_ids, input_masks)
+
+            loss = criterion(output, train_label)
+
+            total_loss_train += loss.item()
+            acc = (output.argmax(dim=1) == train_label).sum().item()
+            total_acc_train += acc
+
             model.zero_grad()
             loss.backward()
             optimizer.step()
 
+        print(f'Epochs: {epoch + 1}, Train Loss: {total_loss_train / len(labels)}, Train Accuracy: {total_acc_train/len(labels)}')
+
 
 deep_judge = DeepJudge(roberta_model=roberta_model)
-train(deep_judge, tokenized_articles, labels, cfg.learning_rate, cfg.epochs)
-torch.save(deep_judge.state_dict(), "trained_model/deep_judge.pth")
+train(deep_judge, cfg.learning_rate, cfg.epochs)
+torch.save(deep_judge.state_dict(), f"trained_model/{cfg.model_name}.pth")

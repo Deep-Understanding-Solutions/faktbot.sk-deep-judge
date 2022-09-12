@@ -24,9 +24,11 @@ class DeepJudge(nn.Module):
         # Currently not used, but might be in the future.
         self.relu_layer_3 = nn.ReLU()
 
-    def forward(self, x):
-        """Execute the model architecture."""
-        pooled_output = self.roberta_model(**x).pooler_output
+    def forward(self, input_ids, input_masks):
+        """Forge the model architecture and accept parameters to fill the
+        data for pretrained BERT model.
+        """
+        pooled_output = self.roberta_model(input_ids=input_ids, attention_mask=input_masks).pooler_output
         dropout_layer = self.dropout_layer(pooled_output)
 
         linear_layer_1 = self.linear_layer_1(dropout_layer)
