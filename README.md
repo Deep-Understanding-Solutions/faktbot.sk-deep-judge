@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://i.ibb.co/thTdqYh/deep-judge.png" align="center" width="100"/>
+</p>
+
 # faktbot.sk-deep-judge
 This project implements model and training API for fake news
 detection in Slovak language.
