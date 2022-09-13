@@ -69,7 +69,7 @@ def train(model, learning_rate, epochs):
             loss.backward()
             optimizer.step()
 
-        print(f'Epochs: {epoch + 1}, Train Loss: {total_loss_train / len(labels)}, Train Accuracy: {total_acc_train/len(labels)}')
+        print(f'Epochs: {epoch + 1}, Train Loss: {total_loss_train / len(labels)}, Train Accuracy: {total_acc_train / len(labels)}')
 
 
 deep_judge = DeepJudge(roberta_model=roberta_model)
