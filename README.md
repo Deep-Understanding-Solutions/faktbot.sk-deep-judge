@@ -3,7 +3,7 @@
 </p>
 
 # faktbot.sk-deep-judge
-This project implements model and training API for fake news detection in Slovak language using <strong>B</strong>ilinear <strong>E</strong>ncoder <strong>R</strong>epresentations <strong>F</strong>rom <strong>T</strong>ransformers.
+This project implements model and training API for fake news detection in Slovak language by utilizing <strong>B</strong>ilinear <strong>E</strong>ncoder <strong>R</strong>epresentations <strong>F</strong>rom <strong>T</strong>ransformers (BERT).
 
 ## Code
 This project is written in PyTorch (Python language).
