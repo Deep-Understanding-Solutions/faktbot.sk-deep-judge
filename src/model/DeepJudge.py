@@ -1,6 +1,5 @@
 from torch import nn
 from src import config as cfg
-import numpy as np
 
 
 class DeepJudge(nn.Module):
@@ -30,7 +29,7 @@ class DeepJudge(nn.Module):
         data for pretrained BERT model.
         """
         pooled_output = self.roberta_model(input_ids=input_ids, attention_mask=input_masks).pooler_output
-        print(np.shape(pooled_output))
+
         # Dropout is commonly used after pooling operations.
         dropout_layer = self.dropout_layer(pooled_output)
 
