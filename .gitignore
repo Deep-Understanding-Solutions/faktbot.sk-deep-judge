@@ -1,4 +1,4 @@
 .idea/
 trained_model/*
-data/*
+data/train.csv
 __pycache__
