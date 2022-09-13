@@ -16,6 +16,8 @@ Model will be trained on carefully collected and curated list of provably accura
 Our model utilizes internal states produced by `gerulata/slovakbert` model (BERT architecture) and attempts to learn article truthfulness/realiability from them. Internal
 states are passed into feedforward DNN that learns to classify text.
 
+<p align="center"><img src="https://gcdnb.pbrd.co/images/nMTMAtce86yC.png"/></p>
+
 ## Model output
 Model output is constructed by using Linear layer with 2 nodes, activated by ReLu to trim the values. This layer generates two arbitrary values (without metrics), which score given class to be the one of the article.
 
