@@ -7,6 +7,7 @@ import pandas as pd
 import config as cfg
 from model.DeepJudge import DeepJudge
 from data.Dataset import Dataset
+import numpy as np
 
 # Parse csv data.
 csv_data = pd.read_csv("data/train.csv")
@@ -57,6 +58,7 @@ def train(model, learning_rate, epochs):
             input_ids = train_input.input_ids.squeeze(1)
             input_masks = train_input.attention_mask
 
+            print(np.shape(input_ids))
             output = model(input_ids, input_masks)
 
             loss = criterion(output, train_label)
