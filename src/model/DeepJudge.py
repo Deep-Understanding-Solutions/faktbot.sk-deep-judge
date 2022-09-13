@@ -29,6 +29,7 @@ class DeepJudge(nn.Module):
         data for pretrained BERT model.
         """
         pooled_output = self.roberta_model(input_ids=input_ids, attention_mask=input_masks).pooler_output
+        # Dropout is commonly used after pooling operations.
         dropout_layer = self.dropout_layer(pooled_output)
 
         linear_layer_1 = self.linear_layer_1(dropout_layer)
@@ -37,6 +38,8 @@ class DeepJudge(nn.Module):
         linear_layer_2 = self.linear_layer_2(relu_layer_1)
         relu_layer_2 = self.relu_layer_2(linear_layer_2)
 
-        final_layer = self.linear_layer_3(relu_layer_2)
+        linear_layer_3 = self.linear_layer_3(relu_layer_2)
+        # This must be done because we only want positive numbers as a result.
+        final_layer = self.relu_layer_3(linear_layer_3)
 
         return final_layer

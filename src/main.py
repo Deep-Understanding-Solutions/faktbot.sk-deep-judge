@@ -25,6 +25,19 @@ train = Dataset(articles, labels, tokenizer)
 train_data_loader = torch.utils.data.DataLoader(train, batch_size=cfg.batch_size, shuffle=True)
 
 
+def evaluateConfidence(predicted_value):
+    """
+    Evaluate confidence of prediction.
+    :param predicted_value: Tensor predicted by DeepJudge model.
+    :return: Tuple (predicted_result_index, predicted_result_confidence).
+    """
+    max_index = torch.argmax(predicted_value)
+    min_index = 0 if max_index == 1 else 1
+
+    confidence = torch.tensor(100) if predicted_value[min_index] == 0 else predicted_value[max_index] / predicted_value[min_index]
+    return max_index.item(), confidence.item()
+
+
 def train(model, learning_rate, epochs):
     """
     Method invoking main training cycle.
