@@ -25,7 +25,7 @@ train = Dataset(articles, labels, tokenizer)
 train_data_loader = torch.utils.data.DataLoader(train, batch_size=cfg.batch_size, shuffle=True)
 
 
-def evaluateConfidence(predicted_value):
+def evaluate_confidence(predicted_value):
     """
     Evaluate confidence of prediction.
     :param predicted_value: Tensor predicted by DeepJudge model.
@@ -37,6 +37,11 @@ def evaluateConfidence(predicted_value):
     confidence = torch.tensor(100) if predicted_value[min_index] == 0 else predicted_value[max_index] / predicted_value[min_index]
     return max_index.item(), confidence.item()
 
+def determine_device():
+    "Determine if current device supports CUDA."
+    uses_cuda = torch.cuda.is_available()
+    device = uses_cuda, torch.device("cuda" if uses_cuda else "cpu")
+
 
 def train(model, learning_rate, epochs):
     """
@@ -45,6 +50,14 @@ def train(model, learning_rate, epochs):
     # We will use categorical cross-entropy with Adam activation.
     criterion = nn.CrossEntropyLoss()
     optimizer = Adam(model.parameters(), lr=learning_rate)
+    
+    # Get execution device information.
+    uses_cuda, device = determine_device()
+    
+    # Cast model and criterion to particular device.
+    if uses_cuda:
+        model = model.cuda()
+        criterion = criterion.cuda()
 
     # This is for demonstrational purposes, it needs to be integrated to DataLoader and stuff.
     for epoch in range(epochs):
@@ -54,8 +67,9 @@ def train(model, learning_rate, epochs):
 
         for train_input, train_label in tqdm(train_data_loader):
             # [batch_size, 1, seq_length] - remove the 1.
-            input_ids = train_input.input_ids.squeeze(1)
-            input_masks = train_input.attention_mask
+            input_ids = train_input.input_ids.squeeze(1).to(device)
+            train_label = train_label.to(device)
+            input_masks = train_input.attention_mask.to(device)
 
             output = model(input_ids, input_masks)
 
