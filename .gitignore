@@ -2,3 +2,4 @@
 trained_model/*
 data/train.csv
 __pycache__
+deep_judge.pth
