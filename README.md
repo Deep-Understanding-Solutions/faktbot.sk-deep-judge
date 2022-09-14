@@ -22,3 +22,8 @@ Model output is constructed by using Linear layer with 2 nodes, activated by ReL
 
 ## Labels
 Labels consist of 0s and 1s shaped (batch_size). Each label will be used to maximize label-th node value of the last linear layer. Therefore higher score on first node will mean that article belongs to class 0 and higher score on the 2nd will mean that article belongs to class 1.
+
+## Training
+Model training is generally highly stable and converges fast towards the goal. Experiments proved batch sizes up to 12 to work the best along with learning rate ~10e-6. Learning rate is very important in achieving the goal, because larger values make training stagnate because of vanishing gradient.
+
+Collab training url: https://colab.research.google.com/drive/193kVNejCzooPE_-bkueZ9cwRa5t1pVOr?usp=sharing
