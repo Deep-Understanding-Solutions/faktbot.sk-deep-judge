@@ -26,4 +26,14 @@ Labels consist of 0s and 1s shaped (batch_size). Each label will be used to maxi
 ## Training
 Model training is generally highly stable and converges fast towards the goal. Experiments proved batch sizes up to 12 to work the best along with learning rate ~10e-6. Learning rate is very important in achieving the goal, because larger values make training stagnate because of vanishing gradient.
 
-Collab training url: https://colab.research.google.com/drive/193kVNejCzooPE_-bkueZ9cwRa5t1pVOr?usp=sharing.
+Collab training url: https://colab.research.google.com/drive/193kVNejCzooPE_-bkueZ9cwRa5t1pVOr?usp=sharing
+<ul>
+  <li>Prerequisite to training on this collab is to have <b>train.csv</b> dataset stored in your google drive. The dataset structure is described below.</li>
+  <li>Training the model in this collab will result with trained model (deep_judge.pth) being stored in your google drive. Permissions to read and write into google drive need to be granted and will be asked for before training begins.
+  </li>
+</ul>
+
+train.csv required structure:
+| title  | text | commentary  | locality | subject | label
+| -------|----- | ----------  | -------- | --------| -----
+| string | string | boolean | string(countrycode) | string | number(binary)
