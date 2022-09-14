@@ -1,7 +1,7 @@
-epochs = 1
-batch_size = 4
-num_batches = 2
-learning_rate = .1
+epochs = 100
+batch_size = 4 # Should be very small to ensure training convergence.
+num_batches = 100
+learning_rate = 1e-6 # Shoud be also *very* small. High rates make training stagnate.
 bert_output_dim = 768
 csv_rows_limit = batch_size * num_batches
 
