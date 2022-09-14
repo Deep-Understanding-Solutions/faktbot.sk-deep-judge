@@ -26,4 +26,4 @@ Labels consist of 0s and 1s shaped (batch_size). Each label will be used to maxi
 ## Training
 Model training is generally highly stable and converges fast towards the goal. Experiments proved batch sizes up to 12 to work the best along with learning rate ~10e-6. Learning rate is very important in achieving the goal, because larger values make training stagnate because of vanishing gradient.
 
-Collab training url: https://colab.research.google.com/drive/193kVNejCzooPE_-bkueZ9cwRa5t1pVOr?usp=sharing
+Collab training url: https://colab.research.google.com/drive/193kVNejCzooPE_-bkueZ9cwRa5t1pVOr?usp=sharing.
