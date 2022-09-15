@@ -34,6 +34,6 @@ Collab training url: https://colab.research.google.com/drive/193kVNejCzooPE_-bku
 </ul>
 
 train.csv required structure:
-| title  | text | commentary  | locality | subject | label
+| title  | text | commentary  | locality | category | label
 | -------|----- | ----------  | -------- | --------| -----
 | string | string | boolean | string(countrycode) | string | number(binary)
