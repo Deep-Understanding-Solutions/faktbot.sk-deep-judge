@@ -3,3 +3,5 @@ trained_model/*
 __pycache__
 deep_judge.pth
 data
+conda
+roberta.pth
