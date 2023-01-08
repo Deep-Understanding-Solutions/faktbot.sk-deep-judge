@@ -40,10 +40,13 @@ def evaluate_confidence(predicted_value):
     confidence = torch.tensor(100) if predicted_value[min_index] == 0 else predicted_value[max_index] / predicted_value[min_index]
     return max_index.item(), confidence.item()
 
+
 def determine_device():
-    "Determine if current device supports CUDA."
+    """
+    Determine if current device supports CUDA.
+    """
     uses_cuda = torch.cuda.is_available()
-    device = uses_cuda, torch.device("cuda" if uses_cuda else "cpu")
+    return uses_cuda, torch.device("cuda" if uses_cuda else "cpu")
 
 
 def train(model, learning_rate, epochs):

@@ -3,9 +3,11 @@ from src import config as cfg
 
 
 class DeepJudge(nn.Module):
-    """This model uses pooled output of BERT and then runs it through
+    """
+    This model uses pooled output of BERT and then runs it through
     linear layers to generate two classes - one for realness and one
-    for fakeness."""
+    for fakeness.
+    """
 
     def __init__(self, roberta_model, dropout=.5):
         """Initialize model layers."""
@@ -25,7 +27,8 @@ class DeepJudge(nn.Module):
         self.relu_layer_3 = nn.ReLU()
 
     def forward(self, input_ids, input_masks):
-        """Forge the model architecture and accept parameters to fill the
+        """
+        Forge the model architecture and accept parameters to fill the
         data for pretrained BERT model.
         """
         pooled_output = self.roberta_model(input_ids=input_ids, attention_mask=input_masks).pooler_output
