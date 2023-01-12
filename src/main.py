@@ -20,9 +20,6 @@ labels = csv_data[cfg.label_csv_selector].values
 tokenizer = RobertaTokenizer.from_pretrained("gerulata/slovakbert")
 roberta_model = RobertaModel.from_pretrained("gerulata/slovakbert")
 
-model = DeepJudge(roberta_model)
-model.load_state_dict(torch.load('deep_judge.pth', map_location=torch.device('cpu')))
-
 # Create the dataset and the data loader.
 train = Dataset(articles, labels, tokenizer)
 train_data_loader = torch.utils.data.DataLoader(train, batch_size=cfg.batch_size, shuffle=True)
